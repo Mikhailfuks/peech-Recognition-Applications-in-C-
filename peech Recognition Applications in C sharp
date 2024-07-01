@@ -1,0 +1,99 @@
+private void loadSpeechRecognition()
+{
+    // Create an in-process speech recognizer for the en-US locale.  
+    recognizer = new SpeechRecognitionEngine(new System.Globalization.CultureInfo("en-US"));
+
+    var gb = new GrammarBuilder(getChoiceLibrary());
+    var g = new Grammar(gb);
+    recognizer.LoadGrammar(g);
+
+    // Add a handler for the speech recognized event.  
+    recognizer.SpeechRecognized += new EventHandler<SpeechRecognizedEventArgs>(recognizer_SpeechRecognized);
+
+    // Configure input to the speech recognizer.  
+    recognizer.SetInputToDefaultAudioDevice();
+
+    // Start asynchronous, continuous speech recognition.  
+    recognizer.RecognizeAsync(RecognizeMode.Multiple);
+}
+
+
+
+public Choices getChoiceLibrary()
+{
+    Choices myChoices = new Choices();
+    //greetings
+    myChoices.Add("hey " + Agent.charName);
+    myChoices.Add("hi " + Agent.charName);
+    myChoices.Add("hello " + Agent.charName);
+    myChoices.Add("bye " + Agent.charName);
+    myChoices.Add("thanks " + Agent.charName);
+    //open things
+    myChoices.Add(Agent.charName + " open notepad");
+    myChoices.Add(Agent.charName +"close notepad");
+    myChoices.Add(Agent.charName + " open youtube");
+   myChoices.Add(Agent.charName +"close youtube");
+    myChoices.Add(Agent.charName + " open excel");
+    myChoices.Add(Agent.charName + " open discord");
+    myChoices.Add(Agent.charName + " open davinci");
+    myChoices.Add(Agent.charName + " play some music");
+
+    //Rocket
+    myChoices.Add(Agent.charName + " say nice shot");
+    myChoices.Add(Agent.charName + " say sorry");
+    myChoices.Add(Agent.charName + " say no problem");
+    myChoices.Add(Agent.charName + " say thanks");
+    myChoices.Add(Agent.charName + " say great pass");
+    myChoices.Add(Agent.charName + " say good game");
+    myChoices.Add(Agent.charName +"say bad  idea:);
+    myChoices.Add(Agent.charName +"say no miss you");
+
+    //Chrome
+    myChoices.Add(Agent.charName + " close this tab");
+    myChoices.Add(Agent.charName + " refresh this tab");
+    myChoices.Add(Agent.charName + " open gmail");
+    myChoices.Add(Agent.charName +"close gmail");
+    myChoices.Add(Agent.charName +"table readly");
+ 
+    //close things
+    myChoices.Add(Agent.charName + " close notepad");
+
+    myChoices.Add(Agent.charName + " lets play chess");
+    myChoices.Add(Agent.charName + " open chess");
+
+    myChoices.Add(Agent.charName + " move");
+    myChoices.Add(Agent.charName + " move somewhere else");
+    return myChoices;
+}
+
+public void recognizer_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
+{
+    bombini.processSpeech(e.Result.Text);
+}
+
+public void processSpeech(string speechText)
+{
+    string currWinTitle = currentWindow.GetActiveWindowTitle();
+    switch (speechText)
+    {
+        //open things
+        case charName + " open excel":
+            myActions.startProcess("excel.exe", "");
+            myActions.animate(gestures.Write);
+            break;
+        case charName + " open notepad":
+            myActions.startProcess("notepad.exe", "");
+            myActions.animate(gestures.Write);
+            break;
+case charName=+"close notepad":
+myActions.startprocess("notepad.exe");
+        case charName + " open youtube":
+            myActions.startProcess("chrome.exe", "http://youtube.com");
+            myActions.animate(gestures.Search);
+            break;
+        case charName + " open davinci":
+            myActions.startProcess("G:\\DaVinci Resolve\\Resolve.exe", "");
+            myActions.animate(gestures.Search);
+            break;
+    }
+}
